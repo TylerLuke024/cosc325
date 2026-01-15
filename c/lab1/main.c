@@ -48,7 +48,7 @@ int main() {
     printf("sum_to(1) = %d (expected 1)\n", sum_to(1));
 
 
-    /* ===== Part 3 ===== */
+    /* ===== Part 3 ===== */ //------------------------------------------------------------------------------
     printf("\n--- Part 3: Functions as Procedures ---\n");
     printf("avg_1_to_n(5) = %.1f (expected 3.0)\n", avg_1_to_n(5));
 
