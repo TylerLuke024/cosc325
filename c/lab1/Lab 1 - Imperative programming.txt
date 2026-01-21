@@ -1,0 +1,40 @@
+﻿Reflection 1.1: What changed over time? Where did the intermediate values “live” while the program ran?
+
+
+The value of “X” changed over time and the intermediate values lived in “X” while the program ran. 
+
+
+Reflection 1.2: Did the meaning change? Explain in one sentence why imperative languages care about order.
+
+
+Yes the meaning changed because the value of “X” changed. Imperative languages care about order because the later statements depend on the earlier ones.
+
+
+Reflection 2.1: Point to the exact line(s) where control happens and where state changes.
+
+
+The control happens where the for loop starts (line 17) and the state changes where “i” is added to the sum (line 18)
+
+
+Reflection 2.2: What did those versions “hide” that your C version had to spell out?
+
+
+Those versions hid the loop itself, the counter variable, and the total sum variable. 
+
+
+Reflection 3.1: What does C require you to write that Java/Python often infer or convert automatically?
+
+
+C requires you to cast an int to a double while Java/Python will automatically convert integers into doubles during division.
+
+
+Reflection 4.1: Why didn’t a change? (Use the phrase “pass-by-value”.)
+
+
+“A” didn't change because C uses pass-by-value, meaning that the increment_bad method got a copy of “a” and incremented that value but the original value remained the same
+
+
+Reflection 4.2: In one sentence, define what a pointer gives you in terms of state sharing.
+
+
+A pointer gives you a way to change the original value by accessing the memory of the variable instead of the copy.

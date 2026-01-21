@@ -11,15 +11,19 @@
 
 /* ===== Part 2 ===== */
 int sum_to(int n) {
-    // TODO: implement using a for loop and mutable local state
-    return 0;
+    int sum = 0;
+    for (int i = 1; i <= n; i++) {
+        sum += i;
+    }
+    return sum;
 }
 
 /* ===== Part 3 ===== */
 double avg_1_to_n(int n) {
     // TODO: call sum_to(n)
     // HINT: cast to double to avoid integer division
-    return 0.0;
+
+    return (double)sum_to(n) / n;
 }
 
 /* ===== Part 4 ===== */
@@ -28,7 +32,7 @@ void increment_bad(int x) {
 }
 
 void increment(int *x) {
-    // TODO: fix using a pointer
+    (*x)++;
 }
 
 int main() {
@@ -37,8 +41,8 @@ int main() {
     printf("--- Part 1: State and Sequence ---\n");
 
     int x = 2;
-    x = x + 3;
     x = x * 4;
+    x = x + 3;
     printf("x=%d\n", x);
 
     // TODO: swap the last two assignments above and re-run
@@ -50,7 +54,7 @@ int main() {
     printf("sum_to(1) = %d (expected 1)\n", sum_to(1));
 
 
-    /* ===== Part 3 ===== */ //------------------------------------------------------------------------------
+    /* ===== Part 3 ===== */
     printf("\n--- Part 3: Functions as Procedures ---\n");
     printf("avg_1_to_n(5) = %.1f (expected 3.0)\n", avg_1_to_n(5));
 
