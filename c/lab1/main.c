@@ -9,17 +9,23 @@
  * 1/15/26 - Tyler Luke
  */
 
-/* ===== Part 2 ===== */
+/* ===== Part 2 ===== */ //add all of the numbers form 1-n (include n)
 int sum_to(int n) {
     // TODO: implement using a for loop and mutable local state
-    return 0;
+    int i;
+    int sum = 0;;
+    for(i = 0; i <= n; i++){
+        sum += i;
+    }
+    return sum;
 }
 
 /* ===== Part 3 ===== */
-double avg_1_to_n(int n) {
+double avg_1_to_n(int n) { //add all up and civide to get aversage
     // TODO: call sum_to(n)
     // HINT: cast to double to avoid integer division
-    return 0.0;
+
+    return (double)sum_to(n) / n;
 }
 
 /* ===== Part 4 ===== */
@@ -28,6 +34,7 @@ void increment_bad(int x) {
 }
 
 void increment(int *x) {
+    (*x)++;
     // TODO: fix using a pointer
 }
 
@@ -37,8 +44,8 @@ int main() {
     printf("--- Part 1: State and Sequence ---\n");
 
     int x = 2;
-    x = x + 3;
     x = x * 4;
+    x = x + 3;
     printf("x=%d\n", x);
 
     // TODO: swap the last two assignments above and re-run
@@ -67,3 +74,4 @@ int main() {
 
     return 0;
 }
+// commit and push to submit

@@ -28,8 +28,8 @@ int  lex();
 #define UNKNOWN 99
 
 /* Token codes */
-#define STR_LIT 8
-#define INT_LIT 10
+#define STRING 8
+#define NUMBER 10
 #define FLOAT_LIT 9
 #define IDENT 11
 #define LT_OP 18
@@ -54,20 +54,7 @@ int  lex();
 #define RUN 40
 #define END 41
 #define COMMA 45
-
-/******************************************************/
-/* main driver */
-int main() {
-   /* Open the input data file and process its contents */
-   if  ((in_fp = fopen("front.in", "r")) == NULL)
-     printf("ERROR - cannot open front.in \n");
-   else  {
-     getChar();
-     do   {
-       lex();
-    }  while (nextToken != EOF);
-  }
-}
+#define CR 99
 
 /*****************************************************/
 /* lookup - a function to lookup operators and parentheses
@@ -124,6 +111,11 @@ int  lookup(char  ch) {
       addChar();
       nextToken = COMMA;
       break;
+    
+    case '\n':
+      addChar();
+      nextToken = CR;
+      break;
 
     default:
       addChar();
@@ -170,7 +162,7 @@ void getChar() {
 /* getNonBlank - a function to call getChar until it
                  returns a non-whitespace character */
 void getNonBlank() {
-  while  (isspace(nextChar))
+  while  (isspace(nextChar) && nextChar != '\n')
     getChar();
 }
 
@@ -244,7 +236,7 @@ int  lex() {
       nextToken = FLOAT_LIT;
       break;
    }
-   nextToken = INT_LIT;
+   nextToken = NUMBER;
    break;
 
 /* Parentheses and operators */
@@ -262,7 +254,7 @@ int  lex() {
       }
       addChar();
       getChar();
-    nextToken = STR_LIT;
+    nextToken = STRING;
     break;
     
 /* EOF */
