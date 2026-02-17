@@ -54,6 +54,7 @@ int lex();
 #define LIST 43
 #define CLEAR 44
 #define RUN 45
+#define RETURN 50
 #define CR 99
 
 
@@ -195,7 +196,13 @@ int keywordLookup() {
     return LIST;
   else if (strcmp(lexeme,"RUN")==0)
     return RUN;
-  else if (strcmp(lexeme,"VAR")==1)
+  else if (strcmp(lexeme,"IF")==0)
+    return IF;
+  else if (strcmp(lexeme,"THEN")==0)
+    return THEN;
+  else if (strcmp(lexeme,"RETURN")==0)
+    return RETURN;
+  else if (strlen(lexeme)==1)
     return VAR;
   //else if ... finish all the keywords!
   else

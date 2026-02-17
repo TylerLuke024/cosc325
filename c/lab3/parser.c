@@ -62,12 +62,9 @@ void statement() {
 
         case IF:
             lex();
-            expression(); 
-            lex();
-            relop();
-            lex();
+            expression(); // all expressions have an extra call to lex() because of term()
+            relop(); // this always ends with an extra call to lex()
             expression();
-            lex();
             if (nextToken != THEN) {
                 printf("error! expecting then found something else");
             }
@@ -91,7 +88,7 @@ void statement() {
 
         case LET:
             lex();
-            if (nextToken != IDENT) {
+            if (nextToken != VAR) {
                 printf("Expecting IDENT but found: %d\n", nextToken);
                 exit(1);
             }
@@ -218,6 +215,25 @@ void factor() {
     }
 }
 
+// this always has an extra call to lex()
 void relop() {
-
+    if (nextToken == LT_OP) {
+        lex();
+        if (nextToken == RT_OP || nextToken == EQUALS_OP) {
+            lex();
+        }
+    }
+    else if (nextToken == RT_OP) {
+        lex();
+        if (nextToken == LT_OP || nextToken == EQUALS_OP) {
+            lex();
+        }
+    }
+    else if (nextToken == EQUALS_OP) {
+        lex();
+    }
+    else {
+        printf("Expecting some valid REL_OP but found: %d\n", nextToken);
+        exit(1);
+    }
 }
