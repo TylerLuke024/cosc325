@@ -8,6 +8,7 @@ int linenos[10];
 void line();
 void statement();
 void expr_list();
+void var_list();
 void expression();
 void term();
 void factor();
@@ -85,7 +86,7 @@ void statement() {
         // keep going with more cases INPUT DOES NOT NEED THE EXTRA CALL TO LEX ... NEITHER DO THE ONES THAT ARE JUST KEYWORDS
         case INPUT:
             lex();
-
+            var_list();
             break;
 
         case LET:
@@ -154,6 +155,28 @@ void expr_list() {
     }
 }
 
+void var_list() {
+    if (nextToken != VAR) {
+        printf("Expecting VAR but found: %d\n", nextToken);
+    }
+    else {
+        lex();
+        // do nothing else for this assignment
+        // but in the next assignment you will need to print something
+    }
+    while (nextToken == COMMA) {
+        lex();
+        if (nextToken != VAR) {
+            printf("Expecting VAR but found: %d\n", nextToken);
+        }
+        else {
+            lex();
+            // do nothing else for this assignment
+            // but in the next assignment you will need to print something
+        }
+    }
+}
+
 void expression() {
     if(nextToken == ADD_OP || nextToken == SUB_OP) {
         lex(); // move past the leading + or - if it was there otherwise, the current nextToken is part of the term so no need to call lex()
@@ -171,11 +194,28 @@ void expression() {
 void term() {
     // you gotta do something here ... should be very similar to expression() but looking for * and / instead of + and -
     // note that term() will end up having an extra call to lex() at the end just like expression() does
+    factor();
+    lex(); // look for mult op or div op
+    while (nextToken == MULT_OP || nextToken == DIV_OP) {
+        lex();
+        factor();
+        lex();
+    }
 }
 
 void factor() {
     // look back at the grammar for all the possibilities for a factor ... you need if else if to handle identifiers, numbers, and parenthesized expressions
     // you should make very sure NOT to have an extra call to lex() here (finally!) because expression() and term() are the ones that need the extra calls to lex() to look for +, -, *, or /
+    if (nextToken == VAR || nextToken == NUMBER) {
+        // dont do anything for this assignment
+    }
+    else if (nextToken == LEFT_PAREN) {
+        lex();
+        expression();
+        if(nextToken != RIGHT_PAREN) {
+            printf("Found %d but expecting RIGHT PAREN\n", nextToken);
+        }
+    }
 }
 
 void relop() {

@@ -31,6 +31,7 @@ int lex();
 #define STRING 8
 #define NUMBER 10
 #define IDENT 11
+#define VAR 12
 #define LT_OP 18
 #define RT_OP 19
 #define EQUALS_OP 20
@@ -194,6 +195,8 @@ int keywordLookup() {
     return LIST;
   else if (strcmp(lexeme,"RUN")==0)
     return RUN;
+  else if (strcmp(lexeme,"VAR")==1)
+    return VAR;
   //else if ... finish all the keywords!
   else
     return IDENT;
