@@ -1,10 +1,19 @@
 #include "lexer.c"
 
+// this is probably the right way to do this
+// but let's do use the two data structure approach instead
+typedef struct {
+    int lineno;
+    char* line;
+} Line;
+Line storedProgram[10]; // group the line numbers together with the line
+
 // data structures needed for the interpreter
-int lineno = 0;   // if this is equal to 0 then we should execute immediately
-char* lines[1000];  // preallocate enough room for 1000 lines
-int linenos[1000];  // map the cooresponding position in "Lines" to the "Line #" in this data structure
-int lineindex = 0; // keeps track of how many lines we have and where the next line should be stored
+int lineno = 0;    // if this is equal to 0 then we should execute immediately
+char* lines[1000];   // preallocate enough room for 1000 lines if we have more lines than that, oh well.
+int linenos[1000];   // map the corresponding position in "lines" to the "line #" in this data structure
+int lineindex = 0;   // keeps track of how many lines we have and where the next line should be stored
+
 
 void line();
 void statement();
@@ -38,20 +47,24 @@ void line() {
     if (nextToken == NUMBER) {
         lineno = atoi(lexeme);
         linenos[lineindex] = lineno;
+
         // take whatever is left in the rest of the line and store it for processing later!
 
         // consume the token by looking at the line number
         // and storing the statement that follows in the right place in our stored program
         // BUT NOT FOR THIS ASSIGNMENT
-        // Call our special lex_endl() to abstract the rest of the line out of the file
-        lex_endl(); // sets a global variable named rest_of_line that we need to store in the right place in our lines data structure
-        // allocated memory for the new line we just read in via lex_endl() and then copy the line we just read into that new memory location
+        // Call our special lex_endl() function to extract the rest of the line out of the file
+        lex_endl(); // sets a global variable named rest_of_line that we need to store in 
+                    // the right place in our lines datastructure;
+
+        // allocate memory for the new line we just read in via lex_endl()
+        // and then copy the line we just read into that new memory location
         lines[lineindex] = malloc(1000);
         strcpy(lines[lineindex], rest_of_line);
         lineindex++;
         printf("Stored this line: %s at line number %d, which is index %d\n", rest_of_line, lineno, lineindex);
     } else {
-    statement(); // note that statement MUST have an extra call to lex()
+        statement(); // note that statement MUST have an extra call to lex()
     }
     if (nextToken != CR && nextToken != EOF) {
         printf("Expecting CR, but found: %d instead!\n", nextToken);
@@ -118,17 +131,17 @@ void statement() {
             // NO extra call to lex to look for the carriage return b/c expression() has an extra call to lex()
             break;
             
-        case RETURN:
         case CLEAR:
             lineindex = 0;
-            lex();
+            lex(); // this IS the extra call to lex() since nothing comes after these keywords
             break;
         case LIST:
-            for(int i = 0; i < lineindex; i++) {
-                printf("%d %s\n", linenos[i], lines[i]);
+            for (int i=0; i<lineindex; i++) {
+              printf("%d: %s\n", linenos[i], lines[i]);
             }
-            lex();
+            lex(); // this IS the extra call to lex() since nothing comes after these keywords
             break;
+        case RETURN:
         case RUN:
         case END:
              lex(); // this IS the extra call to lex() since nothing comes after these keywords

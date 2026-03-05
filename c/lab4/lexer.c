@@ -10,11 +10,11 @@
 /* Variables */
 int charClass;
 char lexeme[100];
+char rest_of_line[1000]; // should be enough room (hopefully) to store all the characters in the rest of the line
 char nextChar;
 int lexLen;
 int token; // this is never used but your book gave it to us in the code
 int nextToken;
-char rest_of_line[1000]; // should be enough room to store all the characters in the next line
 FILE *in_fp; /*, *fopen(); */
 /* Function declarations */
 void addChar();
@@ -213,22 +213,22 @@ int keywordLookup() {
 
 void lex_endl() {
   int i;
-  char rest_of_line[1000]; // should be enough room to store all the characters in the next line
   // read all the characters into a string but not the newline character
-  getChar(); // side effect of setting nextChar and charClass and advancing the file pointer
-  for (i = 0; nextChar != "\n" && nextChar != EOF; i++) {
+  getChar(); // side effect of setting nextChar and charClass and advancing the filepointer
+  for (i=0; nextChar != '\n' && nextChar != EOF; i++) {
     rest_of_line[i] = nextChar;
     getChar();
   }
   rest_of_line[i] = 0; // string termination character
-
-  // lets take care of the END first, after we consume the entire line, if this program is valid
-  // there should be a newline character at the end of the line and the nextToken should be pointing at CR
+  
+  // let's take care of the END first
+  // after we consume the entire line, if this is program is valid
+  // there should be a newline character at the end of the line
+  // and the nextToken should be pointing at CR
   lexLen = 1;
-  strcpy (lexeme, "\n");
+  strcpy(lexeme,"\n");
   nextToken = CR;
 }
-
 
 /*****************************************************/
 /* lex - a simple lexical analyzer for arithmetic
