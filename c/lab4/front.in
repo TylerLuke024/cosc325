@@ -2,6 +2,7 @@
 12 PRINT "hello, world"
 15 PRINT A
 20 INPUT B, C
+25 PRINT A*B
 30 IF B < C THEN LET A=A*B
 40 IF B >= C THEN LET A=A/B
 50 PRINT A, B, C, D
