@@ -13,6 +13,8 @@ int lineno = 0;    // if this is equal to 0 then we should execute immediately
 char* lines[1000];   // preallocate enough room for 1000 lines if we have more lines than that, oh well.
 int linenos[1000];   // map the corresponding position in "lines" to the "line #" in this data structure
 int lineindex = 0;   // keeps track of how many lines we have and where the next line should be stored
+int linei = 0;     // keeps track of which line index we are on while running a program
+int reti = 0;     // keeps track of the index we sougld return to after a gosub is executed
 
 // here's our dirty symbol table
 int symboltable[26];   // position 0 = "A", position 1 = "B", etc...
@@ -70,6 +72,15 @@ int search(int lineno) {
         if (linenos[i]==lineno) 
             return i;
     return -1;
+}
+
+int findLine(int lineno) {
+    int hit = search(lineno);
+    if (hit < 0) {
+        printf("could not find line number target %d\n", lineno);
+        exit(1);
+    }
+    return hit;
 }
 
 
@@ -139,6 +150,7 @@ void line() {
 
 // lex() MUST have already been called before here
 void statement() {
+    int targetlineno; // this is only used for GOTO and GOSUB
     switch(nextToken) {
         case PRINT:
             lex();
@@ -158,12 +170,6 @@ void statement() {
             statement();
             // we never need an extra call to lex() here 
             // because statement() ALWAYS has an extra call to lex()
-            break;
-
-        case GOTO:
-            lex();
-            expression();
-            // no extra call to lex to look for the carriage return
             break;
 
         // keep going with more cases INPUT DOES NOT NEED THE EXTRA CALL TO LEX ... NEITHER DO THE ONES THAT ARE JUST KEYWORDS
@@ -190,18 +196,30 @@ void statement() {
 
             // no extra call to lex() here because expression() will have already called lex() for us when it was looking for +, -, *, or /
             break;
+
+        case GOTO:
+            lex();
+            targetlineno = expression();
+            // find the linei we are supposed to jump to
+            // remember this is from a recursive call where we are in the middle of a for loop that will execute line i++
+            // ... so we need to set it to the target index minus 1
+            linei = findLine(targetlineno)-1;
+            // no extra call to lex to look for the carriage return
+            break;
         
         case GOSUB:
             lex();
-            expression();
-
+            targetlineno = expression();
+            reti = linei; // save the index of the line we should return to 
+            linei = findLine(targetlineno)-1;
             // NO extra call to lex to look for the carriage return b/c expression() has an extra call to lex()
             break;
-            
+                      
         case CLEAR:
             lineindex = 0;
             lex(); // this IS the extra call to lex() since nothing comes after these keywords
             break;
+
         case LIST:
             sort();
             for (int i=0; i<lineindex; i++) {
@@ -209,7 +227,12 @@ void statement() {
             }
             lex(); // this IS the extra call to lex() since nothing comes after these keywords
             break;
+
         case RETURN:
+            linei = reti;
+            lex();
+            break;
+
         case RUN:
             sort();
             // BIG TO DO HERE: update the lexer to take in a String
@@ -223,12 +246,27 @@ void statement() {
             // setting the read_from_str flag and the current line as the string to be read
             // use one variable both ... a char* to the line to be prcoessed
             // if that line is null, then the lexer should be reading from the file
+            for (linei = 0; linei < lineindex; linei++) {
+                // GOTO and GOSUB will ALTER linei
+                in_str = lines[linei];
+                stri = 0;
+                printf("Executing: %d %s\n", linenos[linei], in_str);
+                getChar();
+                lex();
+                line();
+            }
 
             // DON'T FORGET, we need to clear the flag after the program
             // has run and set it to continue reading from the file
             // clearing the flag might necessitate messing with those global
             // variables (nextChar, charClass, etc...)
+            lex();
+            break;
+
         case END:
+            // force the for loop to stop by setting linei = to lineindex
+            linei = lineindex;
+            stri = -1; // this puts us back into file reading mode
             lex(); // this IS the extra call to lex() since nothing comes after these keywords
             break;
     }
