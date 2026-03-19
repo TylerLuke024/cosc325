@@ -16,7 +16,7 @@ int lexLen;
 int token; // this is never used but your book gave it to us in the code
 int nextToken;
 FILE *in_fp; /*, *fopen(); */
-char* in_str; // "statement" we are currently processing whenr unning a program
+char* in_str; // "statement" we are currently processing when running a program
 int stri=-1; // position within string ... -1 means read from file
 /* Function declarations */
 void addChar();
@@ -63,7 +63,6 @@ int lex();
 /*****************************************************/
 /* lookup - a function to lookup operators and parentheses
             and return the token */
-
 int lookup(char ch)
 {
   switch (ch)
@@ -149,8 +148,13 @@ void addChar()
              input and determine its character class */
 void getChar()
 {
-  int c = in_str < 0 ? getc(in_fp) : in_str[stri++];
-  if (c == EOF || stri>=0 && strlen(in_str))
+  if (stri>=0 && stri>=strlen(in_str)) {
+    charClass = EOF;
+    nextChar = 0;
+    return;
+  }
+  int c = stri<0 ? getc(in_fp) : in_str[stri++];
+  if (c == EOF)
   {
     charClass = EOF;
     nextChar = 0;
