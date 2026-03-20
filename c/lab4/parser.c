@@ -31,7 +31,7 @@ int relop();
 
 void killIf() {
     // force the lexer to read to the end of the line
-    // this is when an if statement is false so that it finishes parsing, also used in REM statements to ignore the rest of the line
+    // this is when an if statement is false so that it finishes parsing any way without executing
     while (nextChar != '\n' && nextChar != 0) {
         getChar();
     }
@@ -166,7 +166,7 @@ void statement() {
         case REM:
             killIf();
             break;
-            
+
         case PRINT:
             lex();
             expr_list();
@@ -196,37 +196,39 @@ void statement() {
                     } else {
                         killIf();
                     }
+
                     break;
-                case 2:
+                 case 2:
                     if (if_a == if_b) {
                         statement();
                     } else {
                         killIf();
                     }
+
                     break;
-                case 3:
+                 case 3:
                     if (if_a <= if_b) {
                         statement();
                     } else {
                         killIf();
                     }
+
                     break;
-                case 4:
+                 case 4:
                     if (if_a >= if_b) {
                         statement();
                     } else {
                         killIf();
                     }
                     break;
-                case 5:
+                 case 5:
                     if (if_a != if_b) {
                         statement();
                     } else {
                         killIf();
                     }
                     break;
-            }
-            statement();
+             }
             // we never need an extra call to lex() here 
             // because statement() ALWAYS has an extra call to lex()
             break;
@@ -379,8 +381,8 @@ void var_list() {
         printf("Expecting VAR but found: %d\n", nextToken);
     }
     else {
-        // before we call lex() again we need to grab the position
-        varpos[varcnt++] = lexeme[0] - 'A';
+        // before we call lex() again we need to grab position
+        varpos[varcnt++] = lexeme[0] - 'A';        
 
         lex();
         // we need to use scanf to read from the console
@@ -396,18 +398,18 @@ void var_list() {
             printf("Expecting VAR but found: %d\n", nextToken);
         }
         else {
-            varpos[varcnt++] = lexeme[0] - 'A';
+            varpos[varcnt++] = lexeme[0] - 'A';        
             lex();
-
-            // now we need to use scanf to read from the console
-            // and convert whatever they type in into a number
-            // and then store that number into the symboltable
-            // positions[1] we found during parsing
-            for (int i = 0; i < varcnt; i++) {
-                scanf("%d", &symboltable[varpos[i]]);
-                symboldefined[varpos[i]] = 1;
-            }
         }
+    }
+
+    // now we need to use scanf to read from the console
+    // and convert whatever they type in into a number
+    // and then store that number into the symboltable
+    // varpos[] we found during parsing
+    for (int i=0; i<varcnt; i++) {
+        scanf("%d",&symboltable[varpos[i]]);
+        symboldefined[varpos[i]] = 1;
     }
 }
 
@@ -438,8 +440,7 @@ int term() {
         if (nextToken == MULT_OP) {
             lex();
             result *= factor();
-        }
-        else {
+        } else {
             lex();
             result /= factor();
         }
@@ -491,8 +492,7 @@ int relop() {
             lex();
             if (nextToken == RT_OP) {
                 return 5;
-            }
-            else {
+            } else {
                 return 3;
             }
         } else {
@@ -503,12 +503,10 @@ int relop() {
         lex();
         if (nextToken == LT_OP || nextToken == EQUALS_OP) {
             lex();
-            if (nextToken == LT_OP) {
+            if (nextToken == LT_OP)
                 return 5;
-            }
-            else {
+            else
                 return 4;
-            }
         } else {
             return 1;
         }

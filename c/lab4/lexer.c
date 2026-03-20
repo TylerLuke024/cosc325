@@ -187,6 +187,8 @@ void getNonBlank()
 int keywordLookup() {
   if (strcmp(lexeme,"PRINT")==0 || strcmp(lexeme,"PR")==0)
     return PRINT;
+  else if (strcmp(lexeme,"REM")==0)
+    return REM;
   else if (strcmp(lexeme,"INPUT")==0)
     return INPUT;
   else if (strcmp(lexeme,"GOSUB")==0)
