@@ -211,8 +211,6 @@ int keywordLookup() {
     return THEN;
   else if (strcmp(lexeme,"RETURN")==0)
     return RETURN;
-  else if (strcmp(lexeme,"REM")==0)
-    return REM;
   else if (strlen(lexeme)==1)
     return VAR;
   //else if ... finish all the keywords!
@@ -222,22 +220,16 @@ int keywordLookup() {
 }
 
 void lex_endl() {
-  int i;
-  // read all the characters into a string but not the newline character
-  getChar(); // side effect of setting nextChar and charClass and advancing the filepointer
-  for (i=0; nextChar != '\n' && nextChar != EOF; i++) {
-    rest_of_line[i] = nextChar;
+    int i;
     getChar();
-  }
-  rest_of_line[i] = 0; // string termination character
-  
-  // let's take care of the END first
-  // after we consume the entire line, if this is program is valid
-  // there should be a newline character at the end of the line
-  // and the nextToken should be pointing at CR
-  lexLen = 1;
-  strcpy(lexeme,"\n");
-  nextToken = CR;
+    for (i=0; nextChar != '\n' && charClass != EOF && i < 999; i++) {
+        rest_of_line[i] = nextChar;
+        getChar();
+    }
+    rest_of_line[i] = 0;
+    lexLen = 1;
+    strcpy(lexeme, "\n");
+    nextToken = CR;
 }
 
 /*****************************************************/

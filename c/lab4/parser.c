@@ -140,12 +140,12 @@ void line() {
             // this must be a new line, allocate space for it
             lines[lineindex] = malloc(1000);
             strcpy(lines[lineindex], rest_of_line);
-            printf("Stored this line: %s at line number %d, which is index %d\n", rest_of_line, lineno, lineindex);
+            // printf("Stored this line: %s at line number %d, which is index %d\n", rest_of_line, lineno, lineindex);
             lineindex++;
         } else {
             // we are overwriting an old line so just copy it over the space that was already allocated at previndex
             strcpy(lines[previndex], rest_of_line);
-            printf("Overwrote old line with this line: %s at line number %d, which is index %d\n", rest_of_line, lineno, previndex);
+            // printf("Overwrote old line with this line: %s at line number %d, which is index %d\n", rest_of_line, lineno, previndex);
         }
     } else {
         statement(); // note that statement MUST have an extra call to lex()
@@ -280,7 +280,7 @@ void statement() {
 
             // NO extra call to lex to look for the carriage return b/c expression() has an extra call to lex()
             break;
-                      
+            
         case CLEAR:
             lineindex = 0;
             lex(); // this IS the extra call to lex() since nothing comes after these keywords
@@ -301,32 +301,14 @@ void statement() {
 
         case RUN:
             sort();
-            // BIG TO DO HERE: update the lexer to take in a String
-            // instead of always reading from a file ... DO THIS BY ADDING
-            // a FLAG variable to the lexer to indicate whether it 
-            // should be grabbing the next token from a FILE or from a String
-
-            // also, add a function that will set a global string to be processed
-            // and simultaneously set the flag to start reading from the string
-
-            // loop through all the lines
-            // setting the read_from_str flag and the current line as the string to be read
-            // use one variable both ... a char* to the line to be prcoessed
-            // if that line is null, then the lexer should be reading from the file
             for (linei=0; linei<lineindex; linei++) {
-                // GOTO and GOSUB will ALTER linei
                 in_str = lines[linei];
                 stri = 0;
-                printf("Executing: %d %s\n",linenos[linei],in_str);
+                // printf("Executing: %d %s\n",linenos[linei],in_str);
                 getChar();
                 lex();
                 line();
             }
-
-            // DON'T FORGET, we need to clear the flag after the program
-            // has run and set it to continue reading from the file
-            // clearing the flag might necessitate messing with those global
-            // variables (nextChar, charClass, etc...)
             lex();
             break;
 
