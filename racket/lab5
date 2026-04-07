@@ -1,0 +1,100 @@
+#lang racket
+(define listA  '(3 7 12 5 9 12 4 8 6 12 10 2 14 12 1 11 13 12 15 12 16))
+(define listB  '(25 18 30 22 25 17 19 25 21 20 18 24 23 25 26 27 18 29 28 25))
+
+; returns how many times element appears in the list
+(define (countElement lis element)
+  (cond
+    ((empty? lis) 0)
+    ((= (car lis) element) (+ 1 (countElement (cdr lis) element)))
+    (else (countElement (cdr lis) element))))
+
+;  sort (the really inefficient way)
+;  base case ... list is empty
+;  two recursive steps ... if first item is the smallest item then just cons it onto the sorted tail of the list
+;  if it's not the smallest item then just return the sorted entire list but with the first item moved to the end
+(define (sortL lis)
+  (cond
+    ((empty? lis) lis)
+    ((= (car lis) (apply min lis)) (cons (car lis) (sortL (cdr lis))))
+    (else
+     (sortL (append (cdr lis) (list (car lis)))))))
+
+; base case - i==0 
+; recursive step (geti (cdr lis) (- i 1))
+(define (geti lis i)
+  (cond
+    ((= i (length lis)) (print "error, indexoutofboundsexception") #f)
+    ((= i 0) (car lis))
+    (else
+      (geti (cdr lis) (- i 1)))))
+
+; returns the index of the first occurrence of val in the list
+; returns -1 if not found
+(define (findv lis val)
+  (findvHelper lis val 0))
+
+; recursive helper function for findv
+;  lis - the list we are searching
+;  val - the value we are searching for
+;  i - where we are starting from (or thinking recursively, how far we have made it so far)
+; base case 1 - i==len(lis) means we didn't find it, so return -1
+; base case 2 - (car lis)==val means we found it!, so return i
+; recursive step - (findvHelper (cdr lis) val (+ i 1))
+(define (findvHelper lis val i)
+  (cond
+    ((empty? lis) -1)
+    ((= (car lis) val) i)
+    (else (findvHelper (cdr lis) val (+ i 1)))))
+
+(define (countAll lis)
+  (map (lambda (a) (countElement lis a)) lis))
+
+
+
+; Mean
+(define (mean lis)
+  (if (empty? lis) -1
+   (/ (foldl + 0 lis) (length lis))))
+
+
+; Median
+(define (median lis)
+  (define sortedlist (sortL lis))
+  (cond
+    ; if the list is empty, return -1
+    [(empty? lis) -1]
+    
+    ; if the length of the sorted list is even, return the average of the two middle elements
+    [(even? (length sortedlist))
+     (let ([mid (quotient (length sortedlist) 2)])
+       (/ (+ (list-ref sortedlist (- mid 1))
+                    (list-ref sortedlist mid))
+                 2))]
+    
+    ; if the length of the sorted list is odd, return the middle element
+    [(odd? (length sortedlist))
+     (list-ref sortedlist (quotient (length sortedlist) 2))]))
+
+
+; Mode
+(define (mode lis)
+(geti lis (findv (countAll lis) (maxl (countAll lis)))))
+
+
+; Minimum
+(define (minl lis)
+  (if (= (length lis) 1)
+      (car lis)
+      (if (< (car lis) (minl (cdr lis)))
+          (car lis)
+          (minl (cdr lis)))))
+
+
+; Maximum
+(define (maxl lis)
+  (if (= (length lis) 1)
+      (car lis)
+      (if (> (car lis) (maxl (cdr lis)))
+          (car lis)
+          (maxl (cdr lis)))))
