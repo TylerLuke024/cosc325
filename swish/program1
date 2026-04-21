@@ -1,0 +1,39 @@
+% male facts
+male(tyler).
+male(steven).
+male(rick).
+male(scott).
+
+% female facts
+% female(X) means X is a female
+female(evie).
+female(ann).
+female(annalee).
+female(lauren).
+female(jody).
+
+% parent facts
+% parent(X,Y) means X is the praent of Y
+parent(steve,tyler).
+parent(steve,annalee).
+parent(steve,lauren).
+parent(scott,steve).
+parent(ann,steve).
+parent(jody,tyler).
+parent(jody,annalee).
+parent(jody,lauren).
+parent(evie,jody).
+parent(rick,jody).
+
+father(X, Y) :- male(X), parent(X, Y).
+mother(X, Y) :- female(X), parent(X, Y).
+child(X, Y) :- parent(Y, X).
+son(X, Y) :- child(X, Y), male(X).
+daughter(X, Y) :- child(X, Y), female(X).
+grandparent(X, Y) :- parent(X, Z), parent(Z, Y).
+grandfather(X, Y) :- grandparent(X, Y), male(X).
+grandmother(X, Y) :- grandparent(X, Y), female(X).
+
+fullsibling(X, Y) :- mother(M, X), mother(M, Y), father(F, X), father(F, Y), X \= Y.
+halfsibling(X, Y) :- mother(M, X), mother(M, Y), father(F, X), father(G, Y), F \= G, X \= Y.
+halfsibling(X, Y) :- mother(M, X), mother(N, Y), father(F, X), father(F, Y), M \= N, X \= Y.
