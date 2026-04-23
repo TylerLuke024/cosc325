@@ -3,6 +3,7 @@ male(tyler).
 male(steven).
 male(rick).
 male(scott).
+male(steven).
 
 % female facts
 % female(X) means X is a female
@@ -11,6 +12,7 @@ female(ann).
 female(annalee).
 female(lauren).
 female(jody).
+female(kendra).
 
 % parent facts
 % parent(X,Y) means X is the praent of Y
@@ -18,12 +20,16 @@ parent(steve,tyler).
 parent(steve,annalee).
 parent(steve,lauren).
 parent(scott,steve).
+parent(scott,kendra).
 parent(ann,steve).
+parent(ann,kendra).
 parent(jody,tyler).
 parent(jody,annalee).
 parent(jody,lauren).
 parent(evie,jody).
+parent(evie,steven).
 parent(rick,jody).
+parent(rick,steven).
 
 father(X, Y) :- male(X), parent(X, Y).
 mother(X, Y) :- female(X), parent(X, Y).
@@ -34,6 +40,23 @@ grandparent(X, Y) :- parent(X, Z), parent(Z, Y).
 grandfather(X, Y) :- grandparent(X, Y), male(X).
 grandmother(X, Y) :- grandparent(X, Y), female(X).
 
+% aunt(X, Y) means X is the aunt of Y
+aunt(X, Y) :- parent(Z,Y), fullsibling(X,Z), female(X).
+aunt(X, Y) :- parent(Z,Y), halfsibling(X,Z), female(X).
+
+% uncle(X,Y) means X is the uncle of Y
+uncle(X, Y) :- parent(Z,Y), fullsibling(X,Z), male(X).
+uncle(X, Y) :- parent(Z,Y), halfsibling(X,Z), male(X).
+
 fullsibling(X, Y) :- mother(M, X), mother(M, Y), father(F, X), father(F, Y), X \= Y.
 halfsibling(X, Y) :- mother(M, X), mother(M, Y), father(F, X), father(G, Y), F \= G, X \= Y.
 halfsibling(X, Y) :- mother(M, X), mother(N, Y), father(F, X), father(F, Y), M \= N, X \= Y.
+
+% reverse(R, L) means R is the reversed version of L
+reverse([],[]). % special case where the list is empty; will never be used during our recursion on a non-empty list
+reverse([H],[H]) :- !. % base case for normal lists is this situation where we have a one item list
+reverse(R, [H|T]) :- reverse(TR, T), append(TR, [H], R).
+
+
+
+
